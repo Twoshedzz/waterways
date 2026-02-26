@@ -18,7 +18,8 @@ def init_db():
                 name TEXT NOT NULL,
                 type TEXT NOT NULL,
                 lat REAL,
-                long REAL
+                long REAL,
+                trend TEXT
             )
         """)
         # Index to query the latest reading for a measure
@@ -37,13 +38,13 @@ def get_db():
     finally:
         conn.close()
 
-def insert_reading(measure_id: str, timestamp: str, value: Optional[float], status: str, name: str, type: str, lat: Optional[float], long: Optional[float]):
+def insert_reading(measure_id: str, timestamp: str, value: Optional[float], status: str, name: str, type: str, lat: Optional[float], long: Optional[float], trend: str = "Steady"):
     """Inserts a new reading into the database."""
     with get_db() as conn:
         cursor = conn.cursor()
         cursor.execute(
-            "INSERT INTO readings (measure_id, timestamp, value, status, name, type, lat, long) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
-            (measure_id, timestamp, value, status, name, type, lat, long)
+            "INSERT INTO readings (measure_id, timestamp, value, status, name, type, lat, long, trend) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            (measure_id, timestamp, value, status, name, type, lat, long, trend)
         )
         conn.commit()
 

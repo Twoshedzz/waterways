@@ -70,28 +70,30 @@ async def api_status():
     stations = {}
     
     for r in readings:
-        lat = r.get("lat")
-        lon = r.get("long")
-        # In case lat/lon are missing, fallback to measure_id
-        key = f"{lat},{lon}" if lat and lon else r["measure_id"]
+        key = r["name"]
         
         if key not in stations:
             stations[key] = {
-                "lat": lat,
-                "long": lon,
-                "name": r["name"].split(" (")[0], # Strip suffix like (Level) or (Flow)
+                "lat": r.get("lat"),
+                "long": r.get("long"),
+                "name": key,
                 "readings": [],
-                "worst_status": "Green" # Start optimistic
+                "worst_status": "Green", # Start optimistic
+                "_seen_types": set()
             }
             
-        stations[key]["readings"].append({
-            "measure_id": r["measure_id"],
-            "type": r["type"],
-            "value": r["value"],
-            "status": r["status"],
-            "timestamp": r["timestamp"],
-            "name": r["name"]
-        })
+        # Only add one reading per type (e.g. one level, one flow)
+        if r["type"] not in stations[key]["_seen_types"]:
+            stations[key]["_seen_types"].add(r["type"])
+            stations[key]["readings"].append({
+                "measure_id": r["measure_id"],
+                "type": r["type"],
+                "value": r["value"],
+                "status": r["status"],
+                "timestamp": r["timestamp"],
+                "name": r["name"],
+                "trend": r.get("trend", "Steady")
+            })
         
         # Calculate worst status for the marker color
         curr_worst = stations[key]["worst_status"]
@@ -100,8 +102,13 @@ async def api_status():
         elif r["status"] == "Amber" and curr_worst != "Red":
              stations[key]["worst_status"] = "Amber"
              
-    # Convert dict back to list
-    return list(stations.values())
+    # Remove the temporary _seen_types loop tracker
+    for s in stations.values():
+        s.pop("_seen_types", None)
+        
+    # Sort alphabetically by name
+    sorted_stations = sorted(stations.values(), key=lambda x: x["name"])
+    return sorted_stations
 
 @app.get("/api/bulletin")
 async def api_bulletin():

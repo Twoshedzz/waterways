@@ -20,7 +20,7 @@ def determine_status(value: float, thresholds: Thresholds) -> str:
     return "Green"
 
 async def fetch_station_data(client: httpx.AsyncClient, station: StationConfig):
-    url = f"https://environment.data.gov.uk/flood-monitoring/id/measures/{station.measure_id}/readings?latest"
+    url = f"https://environment.data.gov.uk/flood-monitoring/id/measures/{station.measure_id}/readings?_limit=2&_sorted"
     try:
         response = await client.get(url, timeout=10.0)
         response.raise_for_status()
@@ -31,9 +31,8 @@ async def fetch_station_data(client: httpx.AsyncClient, station: StationConfig):
             logger.warning(f"No recent readings found for {station.measure_id}")
             return
         
-        # Determine the latest reading by looking at the first item
-        # The API usually returns one item when `?latest` is specified, but it's returned as a list or a single object.
-        latest = items[0] if isinstance(items, list) else items
+        # Limit=2 returns up to 2 items sorted natively descending by dateTime
+        latest = items[0]
         
         timestamp = latest.get("dateTime")
         value = latest.get("value")
@@ -44,6 +43,16 @@ async def fetch_station_data(client: httpx.AsyncClient, station: StationConfig):
             
         status = determine_status(value, station.thresholds)
         
+        # Calculate Trend
+        trend = "Steady"
+        if len(items) > 1:
+            prev_value = items[1].get("value")
+            if prev_value is not None:
+                if value > prev_value:
+                    trend = "Rising"
+                elif value < prev_value:
+                    trend = "Falling"
+        
         insert_reading(
             measure_id=station.measure_id,
             timestamp=timestamp,
@@ -52,9 +61,10 @@ async def fetch_station_data(client: httpx.AsyncClient, station: StationConfig):
             name=station.name,
             type=station.type,
             lat=station.lat,
-            long=station.long
+            long=station.long,
+            trend=trend
         )
-        logger.info(f"Recorded reading for {station.measure_id} at {timestamp}: {value} ({status})")
+        logger.info(f"Recorded reading for {station.measure_id} at {timestamp}: {value} ({status}) [{trend}]")
         
     except httpx.HTTPError as e:
         logger.error(f"HTTP error fetching data for {station.measure_id}: {e}")

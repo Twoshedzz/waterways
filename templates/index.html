@@ -250,11 +250,17 @@
                 station.readings.forEach(r => {
                     const val = r.value !== null ? parseFloat(r.value).toFixed(2) : "N/A";
                     const unit = r.type === 'flow' ? 'm³/s' : 'm';
+
+                    let trendIcon = '';
+                    if (r.trend === 'Rising') trendIcon = ' <span title="Rising">⬆️</span>';
+                    else if (r.trend === 'Falling') trendIcon = ' <span title="Falling">⬇️</span>';
+                    else if (r.trend === 'Steady') trendIcon = ' <span title="Steady">➡️</span>';
+
                     innerHTML += `
                         <div class="measure-block status-${r.status}">
                             <div style="font-size:0.9rem; color:#7f8c8d; text-transform:capitalize;">${r.type}</div>
                             <div class="station-value">${val} <span class="unit-label">${unit}</span></div>
-                            <div class="station-status">${r.status} ${r.type}</div>
+                            <div class="station-status">${r.status} ${r.type}${trendIcon}</div>
                             <div class="timestamp">Updated: ${r.timestamp}</div>
                         </div>
                     `;
@@ -360,7 +366,13 @@
                 station.readings.forEach(r => {
                     const val = r.value !== null ? parseFloat(r.value).toFixed(2) : "N/A";
                     const unit = r.type === 'flow' ? 'm³/s' : 'm';
-                    popupHtml += `<em>${r.type}</em>: ${val} ${unit} (${r.status})<br/>
+
+                    let trendIcon = '';
+                    if (r.trend === 'Rising') trendIcon = ' ⬆️';
+                    else if (r.trend === 'Falling') trendIcon = ' ⬇️';
+                    else if (r.trend === 'Steady') trendIcon = ' ➡️';
+
+                    popupHtml += `<em>${r.type}</em>: ${val} ${unit} (${r.status}${trendIcon})<br/>
                                   <span style="font-size:0.8rem;color:#7f8c8d;">Updated: ${r.timestamp}</span><br/>`;
                 });
 
