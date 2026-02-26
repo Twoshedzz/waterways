@@ -383,49 +383,45 @@
                 .filter(s => s.lat && s.long)
                 .sort((a, b) => a.long - b.long);
 
-            // 1. Fetch and render the Thames GeoJSON River Route
-            try {
-                const thamesResponse = await fetch('/static/thames.geojson');
-                if (thamesResponse.ok) {
-                    const thamesGeoJSON = await thamesResponse.json();
+            // 1. Fetch and render all River GeoJSON routes with status coloring
+            const riverFiles = ['/static/thames.geojson', '/static/rivers.geojson'];
+            for (const url of riverFiles) {
+                try {
+                    const resp = await fetch(url);
+                    if (resp.ok) {
+                        const geoData = await resp.json();
+                        L.geoJSON(geoData, {
+                            style: function (feature) {
+                                const coords = feature.geometry.coordinates[0];
+                                const lon = coords[0];
+                                const lat = coords[1];
 
-                    L.geoJSON(thamesGeoJSON, {
-                        style: function (feature) {
-                            // Get a representative point for this segment (first coordinate)
-                            const coords = feature.geometry.coordinates[0];
-                            const lon = coords[0];
-                            const lat = coords[1];
+                                let nearestStation = null;
+                                let minDist = Infinity;
 
-                            let nearestStation = null;
-                            let minDist = Infinity;
+                                sortedStations.forEach(station => {
+                                    const d = getDistance(lat, lon, station.lat, station.long);
+                                    if (d < minDist) {
+                                        minDist = d;
+                                        nearestStation = station;
+                                    }
+                                });
 
-                            sortedStations.forEach(station => {
-                                const d = getDistance(lat, lon, station.lat, station.long);
-                                if (d < minDist) {
-                                    minDist = d;
-                                    nearestStation = station;
+                                let color = '#3498db'; // Default River Blue
+                                if (nearestStation && minDist < 8) {
+                                    const w = nearestStation.worst_status;
+                                    if (w === 'Red') color = '#e74c3c';
+                                    else if (w === 'Amber') color = '#f39c12';
+                                    else if (w === 'Green') color = '#27ae60';
                                 }
-                            });
 
-                            let color = '#3498db'; // Default River Blue
-                            // If the nearest station is within 8km, use its color
-                            if (nearestStation && minDist < 8) {
-                                const w = nearestStation.worst_status;
-                                if (w === 'Red') color = '#e74c3c';
-                                else if (w === 'Amber') color = '#f39c12';
-                                else if (w === 'Green') color = '#27ae60';
+                                return { color: color, weight: 5, opacity: 0.8 };
                             }
-
-                            return {
-                                color: color,
-                                weight: 5,
-                                opacity: 0.8
-                            };
-                        }
-                    }).addTo(mapInstance);
+                        }).addTo(mapInstance);
+                    }
+                } catch (e) {
+                    console.error(`Failed to load river geojson: ${url}`, e);
                 }
-            } catch (e) {
-                console.error("Failed to load thames route geojson", e);
             }
 
             // 2. Render the Station Markers
