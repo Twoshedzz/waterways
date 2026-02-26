@@ -48,6 +48,24 @@
             box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
         }
 
+        .toggle-container {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: bold;
+            color: #2c3e50;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 4px;
+            background: #ecf0f1;
+            display: none;
+            /* Hidden by default, shown in map view */
+        }
+
+        .toggle-container input {
+            cursor: pointer;
+        }
+
         .dashboard {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -201,6 +219,9 @@
     <div class="controls">
         <button id="btn-list" class="active" onclick="setView('list')">List View</button>
         <button id="btn-map" onclick="setView('map')">Map View</button>
+        <label id="lock-toggle-container" class="toggle-container">
+            <input type="checkbox" id="lock-toggle" onchange="toggleLocks(this.checked)"> Show Locks
+        </label>
     </div>
 
     <div id="dashboard" class="dashboard"></div>
@@ -216,7 +237,9 @@
 
     <script>
         let mapInstance = null;
+        let lockLayerGrp = null;
         let stationData = [];
+        let showLocks = false;
 
         async function loadData() {
             try {
@@ -281,7 +304,16 @@
                 attribution: '&copy; OpenStreetMap contributors'
             }).addTo(mapInstance);
 
+            lockLayerGrp = L.layerGroup().addTo(mapInstance);
+
             renderMapMarkers();
+        }
+
+        function toggleLocks(checked) {
+            showLocks = checked;
+            if (mapInstance) {
+                renderMapMarkers();
+            }
         }
 
         // Calculate distance between two lat/lon points
@@ -382,22 +414,25 @@
             });
 
             // 3. Render Lock POIs
-            try {
-                const locksResponse = await fetch('/static/locks.json');
-                if (locksResponse.ok) {
-                    const locksData = await locksResponse.json();
-                    locksData.forEach(lock => {
-                        const lockIcon = L.divIcon({
-                            className: 'marker-lock',
-                            iconSize: [10, 10]
+            lockLayerGrp.clearLayers();
+            if (showLocks) {
+                try {
+                    const locksResponse = await fetch('/static/locks.json');
+                    if (locksResponse.ok) {
+                        const locksData = await locksResponse.json();
+                        locksData.forEach(lock => {
+                            const lockIcon = L.divIcon({
+                                className: 'marker-lock',
+                                iconSize: [10, 10]
+                            });
+                            L.marker([lock.lat, lock.long], { icon: lockIcon })
+                                .bindPopup(`<strong>${lock.name}</strong><br/><em>River Lock</em>`)
+                                .addTo(lockLayerGrp);
                         });
-                        L.marker([lock.lat, lock.long], { icon: lockIcon })
-                            .bindPopup(`<strong>${lock.name}</strong><br/><em>River Lock</em>`)
-                            .addTo(mapInstance);
-                    });
+                    }
+                } catch (e) {
+                    console.error("Failed to load locks data", e);
                 }
-            } catch (e) {
-                console.error("Failed to load locks data", e);
             }
 
             // Fit bounds if we have points
@@ -420,11 +455,13 @@
                 mapBtn.classList.remove('active');
                 dashboard.style.display = 'grid';
                 mapContainer.style.display = 'none';
+                document.getElementById('lock-toggle-container').style.display = 'none';
             } else {
                 mapBtn.classList.add('active');
                 listBtn.classList.remove('active');
                 dashboard.style.display = 'none';
                 mapContainer.style.display = 'block';
+                document.getElementById('lock-toggle-container').style.display = 'flex';
 
                 initMap();
                 setTimeout(() => {
