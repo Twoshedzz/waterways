@@ -1,0 +1,25 @@
+# Python virtual environment
+venv/
+env/
+
+# Python cache files
+__pycache__/
+*.pyc
+*.pyo
+
+# SQLite database
+*.sqlite
+*.db
+
+# Temporary json data files generated during scraping
+thames_candidates.json
+new_stations.json
+locks.json
+
+# IDEs and OS
+.vscode/
+.idea/
+.DS_Store
+
+# Logs
+*.log

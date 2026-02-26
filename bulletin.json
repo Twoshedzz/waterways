@@ -1,0 +1,48 @@
+{
+  "generated_at": "2026-02-26T13:33:46.619545+00:00",
+  "amber_red_stations": [
+    {
+      "name": "River Thames at Walton (Level)",
+      "measure_id": "1029TH-level-stage-i-15_min-mASD",
+      "status": "Amber",
+      "value": 0.405,
+      "timestamp": "2026-02-26T12:45:00Z"
+    },
+    {
+      "name": "River Thames at Ewen (Level)",
+      "measure_id": "0130TH-level-stage-i-15_min-mASD",
+      "status": "Red",
+      "value": 0.654,
+      "timestamp": "2026-02-26T13:00:00Z"
+    },
+    {
+      "name": "River Thames at Somerford Keynes (Level)",
+      "measure_id": "0144TH-level-stage-i-15_min-mASD",
+      "status": "Red",
+      "value": 1.272,
+      "timestamp": "2026-02-26T13:00:00Z"
+    },
+    {
+      "name": "River Thames at Cricklade (Level)",
+      "measure_id": "0190TH-level-stage-i-15_min-mASD",
+      "status": "Red",
+      "value": 0.897,
+      "timestamp": "2026-02-26T13:00:00Z"
+    },
+    {
+      "name": "River Thames at Hannington Bridge (Level)",
+      "measure_id": "0569TH-level-stage-i-15_min-mASD",
+      "status": "Red",
+      "value": 3.788,
+      "timestamp": "2026-02-26T13:00:00Z"
+    },
+    {
+      "name": "River Thames at Farmoor (Level)",
+      "measure_id": "1100TH-level-stage-i-15_min-mASD",
+      "status": "Red",
+      "value": 1.264,
+      "timestamp": "2026-02-26T13:00:00Z"
+    }
+  ],
+  "changes": []
+}

@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>River Status Dashboard</title>
+
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
+
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+            margin: 0;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 1rem;
+        }
+
+        .controls {
+            margin-bottom: 2rem;
+            display: flex;
+            gap: 1rem;
+        }
+
+        button {
+            padding: 0.5rem 1rem;
+            font-size: 1rem;
+            cursor: pointer;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+
+        button.active {
+            background-color: #2980b9;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            width: 100%;
+            max-width: 1200px;
+        }
+
+        #map {
+            width: 100%;
+            max-width: 1200px;
+            height: 600px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            display: none;
+            /* hidden by default */
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s;
+            border-left: 8px solid #ccc;
+            /* Default */
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .card.status-Green {
+            border-left-color: #27ae60;
+        }
+
+        .card.status-Amber {
+            border-left-color: #f39c12;
+        }
+
+        .card.status-Red {
+            border-left-color: #e74c3c;
+        }
+
+        .card.status-Unknown {
+            border-left-color: #95a5a6;
+        }
+
+        .station-name {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin: 0 0 0.5rem 0;
+            color: #2c3e50;
+        }
+
+        .station-value {
+            font-size: 2rem;
+            font-weight: 300;
+            margin: 0.5rem 0;
+        }
+
+        .station-status {
+            font-size: 1rem;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .unit-label {
+            font-size: 1rem;
+        }
+
+        .no-data-card {
+            grid-column: 1 / -1;
+            text-align: center;
+        }
+
+        .status-Green .station-status {
+            color: #27ae60;
+        }
+
+        .status-Amber .station-status {
+            color: #f39c12;
+        }
+
+        .status-Red .station-status {
+            color: #e74c3c;
+        }
+
+        .timestamp {
+            font-size: 0.8rem;
+            color: #7f8c8d;
+            margin-top: 1rem;
+        }
+
+        .measure-block {
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid #eee;
+        }
+
+        .links {
+            margin-top: 3rem;
+        }
+
+        .links a {
+            margin: 0 1rem;
+            color: #3498db;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .links a:hover {
+            text-decoration: underline;
+        }
+
+        /* Map Marker Styles */
+        .marker-red {
+            background-color: #e74c3c;
+            border-radius: 50%;
+            border: 2px solid white;
+            box-shadow: 0 0 4px rgba(0, 0, 0, 0.4);
+        }
+
+        .marker-amber {
+            background-color: #f39c12;
+            border-radius: 50%;
+            border: 2px solid white;
+            box-shadow: 0 0 4px rgba(0, 0, 0, 0.4);
+        }
+
+        .marker-green {
+            background-color: #27ae60;
+            border-radius: 50%;
+            border: 2px solid white;
+            box-shadow: 0 0 4px rgba(0, 0, 0, 0.4);
+        }
+
+        .marker-lock {
+            background-color: #34495e;
+            border-radius: 2px;
+            border: 1px solid #bdc3c7;
+            box-shadow: 0 0 3px rgba(0, 0, 0, 0.5);
+        }
+    </style>
+</head>
+
+<body>
+    <h1>River Status Dashboard</h1>
+
+    <div class="controls">
+        <button id="btn-list" class="active" onclick="setView('list')">List View</button>
+        <button id="btn-map" onclick="setView('map')">Map View</button>
+    </div>
+
+    <div id="dashboard" class="dashboard"></div>
+    <div id="map"></div>
+
+    <div class="links">
+        <a href="/api/status">API: /api/status</a>
+        <a href="/api/bulletin">API: /api/bulletin</a>
+    </div>
+
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+
+    <script>
+        let mapInstance = null;
+        let stationData = [];
+
+        async function loadData() {
+            try {
+                const response = await fetch('/api/status');
+                stationData = await response.json();
+                renderList();
+                if (mapInstance) {
+                    renderMapMarkers();
+                }
+            } catch (e) {
+                console.error("Failed to load data", e);
+                document.getElementById('dashboard').innerHTML = '<div class="card no-data-card"><p>Failed to load data. See console.</p></div>';
+            }
+        }
+
+        function renderList() {
+            const container = document.getElementById('dashboard');
+            container.innerHTML = '';
+
+            if (stationData.length === 0) {
+                container.innerHTML = '<div class="card no-data-card"><p>No data available. Waiting for fetch...</p></div>';
+                return;
+            }
+
+            stationData.forEach(station => {
+                const card = document.createElement('div');
+                card.className = `card status-${station.worst_status}`;
+
+                let innerHTML = `<h2 class="station-name">${station.name}</h2>`;
+
+                station.readings.forEach(r => {
+                    const val = r.value !== null ? parseFloat(r.value).toFixed(2) : "N/A";
+                    const unit = r.type === 'flow' ? 'm³/s' : 'm';
+                    innerHTML += `
+                        <div class="measure-block status-${r.status}">
+                            <div style="font-size:0.9rem; color:#7f8c8d; text-transform:capitalize;">${r.type}</div>
+                            <div class="station-value">${val} <span class="unit-label">${unit}</span></div>
+                            <div class="station-status">${r.status} ${r.type}</div>
+                            <div class="timestamp">Updated: ${r.timestamp}</div>
+                        </div>
+                    `;
+                });
+
+                card.innerHTML = innerHTML;
+                container.appendChild(card);
+            });
+        }
+
+        function initMap() {
+            if (mapInstance) return;
+
+            // Centered roughly around the Thames (London area as default)
+            mapInstance = L.map('map').setView([51.45, -0.3], 10);
+
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; OpenStreetMap contributors'
+            }).addTo(mapInstance);
+
+            renderMapMarkers();
+        }
+
+        // Calculate distance between two lat/lon points
+        function getDistance(lat1, lon1, lat2, lon2) {
+            const R = 6371; // km
+            const dLat = (lat2 - lat1) * Math.PI / 180;
+            const dLon = (lon2 - lon1) * Math.PI / 180;
+            const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+                Math.sin(dLon / 2) * Math.sin(dLon / 2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+            return R * c;
+        }
+
+        async function renderMapMarkers() {
+            if (!mapInstance) return;
+
+            // Clear existing markers if we had a way to track them, 
+            // but for simplicity here we just re-add (fine for infrequent polls, bad for rapid updates)
+            // A better approach would be layer groups, but we'll stick to MVP map loading.
+
+            // Sort west to east across the Thames
+            const sortedStations = [...stationData]
+                .filter(s => s.lat && s.long)
+                .sort((a, b) => a.long - b.long);
+
+            // 1. Fetch and render the Thames GeoJSON River Route
+            try {
+                const thamesResponse = await fetch('/static/thames.geojson');
+                if (thamesResponse.ok) {
+                    const thamesGeoJSON = await thamesResponse.json();
+
+                    L.geoJSON(thamesGeoJSON, {
+                        style: function (feature) {
+                            // Get a representative point for this segment (first coordinate)
+                            const coords = feature.geometry.coordinates[0];
+                            const lon = coords[0];
+                            const lat = coords[1];
+
+                            let nearestStation = null;
+                            let minDist = Infinity;
+
+                            sortedStations.forEach(station => {
+                                const d = getDistance(lat, lon, station.lat, station.long);
+                                if (d < minDist) {
+                                    minDist = d;
+                                    nearestStation = station;
+                                }
+                            });
+
+                            let color = '#3498db'; // Default River Blue
+                            // If the nearest station is within 8km, use its color
+                            if (nearestStation && minDist < 8) {
+                                const w = nearestStation.worst_status;
+                                if (w === 'Red') color = '#e74c3c';
+                                else if (w === 'Amber') color = '#f39c12';
+                                else if (w === 'Green') color = '#27ae60';
+                            }
+
+                            return {
+                                color: color,
+                                weight: 5,
+                                opacity: 0.8
+                            };
+                        }
+                    }).addTo(mapInstance);
+                }
+            } catch (e) {
+                console.error("Failed to load thames route geojson", e);
+            }
+
+            // 2. Render the Station Markers
+            sortedStations.forEach((station) => {
+                const cssClass = `marker-${station.worst_status.toLowerCase()}`;
+
+                const icon = L.divIcon({
+                    className: cssClass,
+                    iconSize: [20, 20]
+                });
+
+                let popupHtml = `<strong>${station.name}</strong><br/>Status: ${station.worst_status}<br/>`;
+                station.readings.forEach(r => {
+                    const val = r.value !== null ? parseFloat(r.value).toFixed(2) : "N/A";
+                    const unit = r.type === 'flow' ? 'm³/s' : 'm';
+                    popupHtml += `<em>${r.type}</em>: ${val} ${unit} (${r.status})<br/>
+                                  <span style="font-size:0.8rem;color:#7f8c8d;">Updated: ${r.timestamp}</span><br/>`;
+                });
+
+                L.marker([station.lat, station.long], { icon: icon })
+                    .bindPopup(popupHtml)
+                    .addTo(mapInstance);
+            });
+
+            // 3. Render Lock POIs
+            try {
+                const locksResponse = await fetch('/static/locks.json');
+                if (locksResponse.ok) {
+                    const locksData = await locksResponse.json();
+                    locksData.forEach(lock => {
+                        const lockIcon = L.divIcon({
+                            className: 'marker-lock',
+                            iconSize: [10, 10]
+                        });
+                        L.marker([lock.lat, lock.long], { icon: lockIcon })
+                            .bindPopup(`<strong>${lock.name}</strong><br/><em>River Lock</em>`)
+                            .addTo(mapInstance);
+                    });
+                }
+            } catch (e) {
+                console.error("Failed to load locks data", e);
+            }
+
+            // Fit bounds if we have points
+            if (sortedStations.length > 0) {
+                const bounds = sortedStations.map(s => [s.lat, s.long]);
+                if (bounds.length > 0) {
+                    mapInstance.fitBounds(bounds, { padding: [50, 50] });
+                }
+            }
+        }
+
+        function setView(viewMode) {
+            const listBtn = document.getElementById('btn-list');
+            const mapBtn = document.getElementById('btn-map');
+            const dashboard = document.getElementById('dashboard');
+            const mapContainer = document.getElementById('map');
+
+            if (viewMode === 'list') {
+                listBtn.classList.add('active');
+                mapBtn.classList.remove('active');
+                dashboard.style.display = 'grid';
+                mapContainer.style.display = 'none';
+            } else {
+                mapBtn.classList.add('active');
+                listBtn.classList.remove('active');
+                dashboard.style.display = 'none';
+                mapContainer.style.display = 'block';
+
+                initMap();
+                setTimeout(() => {
+                    mapInstance.invalidateSize(); // Fixes Leaflet tile loading issue when div is initially hidden
+                }, 100);
+            }
+        }
+
+        // Initialize
+        loadData();
+    </script>
+</body>
+
+</html>

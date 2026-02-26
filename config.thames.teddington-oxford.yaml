@@ -1,0 +1,78 @@
+# River Status App Configuration
+# ------------------------------
+# This configuration defines the 'thin slice' of measures to monitor
+# for the non-tidal Thames (Teddington to Oxford).
+
+patch_name: "Thames (Teddington→Oxford)"
+poll_interval_minutes: 15
+compute_interval_minutes: 60
+max_age_minutes: 90
+
+# ------------------------------
+# REACHES
+# ------------------------------
+# These are the official lock-to-lock reach names for this patch.
+# Use these EXACT names in the `thin_slice_measures` array below.
+reaches:
+  - "Teddington"
+  - "Molesey"
+  - "Sunbury"
+  - "Shepperton"
+  - "Chertsey"
+  - "Penton Hook"
+  - "Bell Weir"
+  - "Old Windsor"
+  - "Romney"
+  - "Boveney"
+  - "Bray"
+  - "Boulter's"
+  - "Cookham"
+  - "Marlow"
+  - "Temple"
+  - "Hurley"
+  - "Hambleden"
+  - "Marsh"
+  - "Shiplake"
+  - "Sonning"
+  - "Blakes"
+  - "Caversham"
+  - "Mapledurham"
+  - "Whitchurch"
+  - "Goring"
+  - "Cleeve"
+  - "Benson"
+  - "Days"
+  - "Clifton"
+  - "Culham"
+  - "Abingdon"
+  - "Sandford"
+  - "Iffley"
+  - "Osney"
+
+# ------------------------------
+# MEASURES (CURATION REQUIRED)
+# ------------------------------
+# Directions:
+# 1. Review the generated `thames_candidates.json` file.
+# 2. Find the JSON blocks for the measures you want to track.
+# 3. Copy the `measure_id` and map it to the appropriate `reach_name`
+#    from the list above.
+# 4. Define the Amber and Red thresholds for that measure.
+
+thin_slice_measures:
+  # --- EXAMPLES ---
+  # - measure_id: "3400TH-flow--Mean-15_min-m3_s"
+  #   name: "Kingston (Flow - )"
+  #   reach_name: "" # Fill with a reach from above
+  #   thresholds:
+  #     amber: 0.50
+  #     red:   0.80
+  #
+  # - measure_id: "3400TH-flow--i-15_min-m3_s"
+  #   name: "Kingston (Flow - )"
+  #   reach_name: "" # Fill with a reach from above
+  #   thresholds:
+  #     amber: 0.50
+  #     red:   0.80
+  #
+  []

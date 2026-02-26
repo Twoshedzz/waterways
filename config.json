@@ -1,0 +1,257 @@
+{
+  "stations": [
+    {
+      "measure_id": "1029TH-level-stage-i-15_min-mASD",
+      "name": "River Thames at Walton (Level)",
+      "type": "level",
+      "lat": 51.385,
+      "long": -0.415,
+      "thresholds": {
+        "amber": 0.40,
+        "red": 0.50
+      }
+    },
+    {
+      "measure_id": "E2043-level-stage-i-15_min-mASD",
+      "name": "River Thames at Molesey (Level)",
+      "type": "level",
+      "lat": 51.405,
+      "long": -0.342,
+      "thresholds": {
+        "amber": 0.80,
+        "red": 0.90
+      }
+    },
+    {
+      "measure_id": "1029TH-flow--i-15_min-m3_s",
+      "name": "River Thames at Walton (Flow)",
+      "type": "flow",
+      "lat": 51.385,
+      "long": -0.415,
+      "thresholds": {
+        "amber": 20.0,
+        "red": 50.0
+      }
+    },
+    {
+      "measure_id": "0130TH-level-stage-i-15_min-mASD",
+      "name": "River Thames at Ewen (Level)",
+      "type": "level",
+      "lat": 51.674733,
+      "long": -1.9904,
+      "thresholds": {
+        "amber": 0.40,
+        "red": 0.60
+      }
+    },
+    {
+      "measure_id": "0144TH-level-stage-i-15_min-mASD",
+      "name": "River Thames at Somerford Keynes (Level)",
+      "type": "level",
+      "lat": 51.650724,
+      "long": -1.973061,
+      "thresholds": {
+        "amber": 0.50,
+        "red": 0.70
+      }
+    },
+    {
+      "measure_id": "0190TH-level-stage-i-15_min-mASD",
+      "name": "River Thames at Cricklade (Level)",
+      "type": "level",
+      "lat": 51.646694,
+      "long": -1.865536,
+      "thresholds": {
+        "amber": 0.50,
+        "red": 0.80
+      }
+    },
+    {
+      "measure_id": "0569TH-level-stage-i-15_min-mASD",
+      "name": "River Thames at Hannington Bridge (Level)",
+      "type": "level",
+      "lat": 51.663588,
+      "long": -1.749677,
+      "thresholds": {
+        "amber": 0.60,
+        "red": 0.90
+      }
+    },
+    {
+      "measure_id": "0701TH-level-stage-i-15_min----",
+      "name": "River Thames at St Johns Lock (Level)",
+      "type": "level",
+      "lat": 51.68931,
+      "long": -1.678796,
+      "thresholds": {
+        "amber": 0.70,
+        "red": 1.00
+      }
+    },
+    {
+      "measure_id": "0898TH-level-stage-i-15_min-mASD",
+      "name": "River Thames at Buscot Lock (Level)",
+      "type": "level",
+      "lat": 51.68119,
+      "long": -1.668729,
+      "thresholds": {
+        "amber": 0.5,
+        "red": 0.8
+      }
+    },
+    {
+      "measure_id": "0901TH-level-stage-i-15_min----",
+      "name": "River Thames at Grafton Lock (Level)",
+      "type": "level",
+      "lat": 51.690894,
+      "long": -1.607898,
+      "thresholds": {
+        "amber": 0.5,
+        "red": 0.8
+      }
+    },
+    {
+      "measure_id": "0902TH-level-stage-i-15_min----",
+      "name": "River Thames at Radcot Lock (Level)",
+      "type": "level",
+      "lat": 51.699764,
+      "long": -1.573094,
+      "thresholds": {
+        "amber": 0.5,
+        "red": 0.8
+      }
+    },
+    {
+      "measure_id": "0903TH-level-stage-i-15_min----",
+      "name": "River Thames at Rushey Lock (Level)",
+      "type": "level",
+      "lat": 51.698716,
+      "long": -1.534037,
+      "thresholds": {
+        "amber": 0.5,
+        "red": 0.8
+      }
+    },
+    {
+      "measure_id": "0904TH-level-stage-i-15_min----",
+      "name": "River Thames at Shifford Lock (Level)",
+      "type": "level",
+      "lat": 51.70718,
+      "long": -1.465193,
+      "thresholds": {
+        "amber": 0.5,
+        "red": 0.8
+      }
+    },
+    {
+      "measure_id": "1099TH-level-stage-i-15_min----",
+      "name": "River Thames at Northmoor Lock (Level)",
+      "type": "level",
+      "lat": 51.716858,
+      "long": -1.374624,
+      "thresholds": {
+        "amber": 0.5,
+        "red": 0.8
+      }
+    },
+    {
+      "measure_id": "1100TH-level-stage-i-15_min-mASD",
+      "name": "River Thames at Farmoor (Level)",
+      "type": "level",
+      "lat": 51.757544,
+      "long": -1.366384,
+      "thresholds": {
+        "amber": 0.5,
+        "red": 0.8
+      }
+    },
+    {
+      "measure_id": "1102TH-level-stage-i-15_min----",
+      "name": "River Thames at Pinkhill Lock (Level)",
+      "type": "level",
+      "lat": 51.761748,
+      "long": -1.362413,
+      "thresholds": {
+        "amber": 0.5,
+        "red": 0.8
+      }
+    },
+    {
+      "measure_id": "1201TH-level-stage-i-15_min----",
+      "name": "River Thames at Eynsham Lock (Level)",
+      "type": "level",
+      "lat": 51.774692,
+      "long": -1.356854,
+      "thresholds": {
+        "amber": 0.5,
+        "red": 0.8
+      }
+    },
+    {
+      "measure_id": "1301TH-level-stage-i-15_min----",
+      "name": "River Thames at Kings Lock (Level)",
+      "type": "level",
+      "lat": 51.789307,
+      "long": -1.306931,
+      "thresholds": {
+        "amber": 0.5,
+        "red": 0.8
+      }
+    },
+    {
+      "measure_id": "1302TH-level-stage-i-15_min----",
+      "name": "River Thames at Godstow Lock (Level)",
+      "type": "level",
+      "lat": 51.776669,
+      "long": -1.298428,
+      "thresholds": {
+        "amber": 0.5,
+        "red": 0.8
+      }
+    },
+    {
+      "measure_id": "1303TH-level-stage-i-15_min-mASD",
+      "name": "River Thames at Osney Lock (Level)",
+      "type": "level",
+      "lat": 51.74909,
+      "long": -1.272781,
+      "thresholds": {
+        "amber": 0.5,
+        "red": 0.8
+      }
+    },
+    {
+      "measure_id": "1501TH-level-stage-i-15_min----",
+      "name": "River Thames at Iffley Lock (Level)",
+      "type": "level",
+      "lat": 51.72955,
+      "long": -1.239792,
+      "thresholds": {
+        "amber": 0.5,
+        "red": 0.8
+      }
+    },
+    {
+      "measure_id": "1502TH-level-stage-i-15_min-mASD",
+      "name": "River Thames at Sandford-on-Thames (Level)",
+      "type": "level",
+      "lat": 51.708312,
+      "long": -1.232825,
+      "thresholds": {
+        "amber": 0.5,
+        "red": 0.8
+      }
+    },
+    {
+      "measure_id": "1503TH-level-stage-i-15_min----",
+      "name": "River Thames at Abingdon Lock (Level)",
+      "type": "level",
+      "lat": 51.670388,
+      "long": -1.268257,
+      "thresholds": {
+        "amber": 0.5,
+        "red": 0.8
+      }
+    }
+  ]
+}
