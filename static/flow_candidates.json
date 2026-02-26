@@ -1,0 +1,134 @@
+[
+  {
+    "measure_id": "3400TH-flow--Mean-15_min-m3_s",
+    "stationReference": "3400TH",
+    "stationLabel": "Kingston",
+    "parameterName": "Flow",
+    "qualifier": "",
+    "lat": 51.415005,
+    "long": -0.308869,
+    "riverName": "River Thames",
+    "suggested_reach_name": ""
+  },
+  {
+    "measure_id": "3400TH-flow--i-15_min-m3_s",
+    "stationReference": "3400TH",
+    "stationLabel": "Kingston",
+    "parameterName": "Flow",
+    "qualifier": "",
+    "lat": 51.415005,
+    "long": -0.308869,
+    "riverName": "River Thames",
+    "suggested_reach_name": ""
+  },
+  {
+    "measure_id": "2200TH-flow--Mean-15_min-m3_s",
+    "stationReference": "2200TH",
+    "stationLabel": "Reading",
+    "parameterName": "Flow",
+    "qualifier": "",
+    "lat": 51.461325,
+    "long": -0.967884,
+    "riverName": "River Thames",
+    "suggested_reach_name": ""
+  },
+  {
+    "measure_id": "1800TH-flow--Mean-15_min-m3_s",
+    "stationReference": "1800TH",
+    "stationLabel": "Sutton Courtenay",
+    "parameterName": "Flow",
+    "qualifier": "",
+    "lat": 51.647821,
+    "long": -1.254167,
+    "riverName": "River Thames",
+    "suggested_reach_name": ""
+  },
+  {
+    "measure_id": "1800TH-flow--i-15_min-m3_s",
+    "stationReference": "1800TH",
+    "stationLabel": "Sutton Courtenay",
+    "parameterName": "Flow",
+    "qualifier": "",
+    "lat": 51.647821,
+    "long": -1.254167,
+    "riverName": "River Thames",
+    "suggested_reach_name": ""
+  },
+  {
+    "measure_id": "2604TH-flow--i-15_min-m3_s",
+    "stationReference": "2604TH",
+    "stationLabel": "Maidenhead",
+    "parameterName": "Flow",
+    "qualifier": "",
+    "lat": 51.524146,
+    "long": -0.702103,
+    "riverName": "River Thames",
+    "suggested_reach_name": ""
+  },
+  {
+    "measure_id": "2900TH-flow--Mean-15_min-m3_s",
+    "stationReference": "2900TH",
+    "stationLabel": "Staines",
+    "parameterName": "Flow",
+    "qualifier": "",
+    "lat": 51.431611,
+    "long": -0.512248,
+    "riverName": "River Thames",
+    "suggested_reach_name": ""
+  },
+  {
+    "measure_id": "3100TH-flow--i-15_min----",
+    "stationReference": "3100TH",
+    "stationLabel": "Walton",
+    "parameterName": "Flow",
+    "qualifier": "",
+    "lat": 51.3919,
+    "long": -0.421389,
+    "riverName": "River Thames",
+    "suggested_reach_name": ""
+  },
+  {
+    "measure_id": "3100TH-flow--i-15_min-m3_s",
+    "stationReference": "3100TH",
+    "stationLabel": "Walton",
+    "parameterName": "Flow",
+    "qualifier": "",
+    "lat": 51.3919,
+    "long": -0.421389,
+    "riverName": "River Thames",
+    "suggested_reach_name": ""
+  },
+  {
+    "measure_id": "2700TH-flow--Mean-15_min-m3_s",
+    "stationReference": "2700TH",
+    "stationLabel": "Windsor Park",
+    "parameterName": "Flow",
+    "qualifier": "",
+    "lat": 51.485795,
+    "long": -0.589124,
+    "riverName": "River Thames",
+    "suggested_reach_name": ""
+  },
+  {
+    "measure_id": "2700TH-flow--i-15_min-m3_s",
+    "stationReference": "2700TH",
+    "stationLabel": "Windsor Park",
+    "parameterName": "Flow",
+    "qualifier": "",
+    "lat": 51.485795,
+    "long": -0.589124,
+    "riverName": "River Thames",
+    "suggested_reach_name": ""
+  },
+  {
+    "measure_id": "1100TH-flow--Mean-15_min-m3_s",
+    "stationReference": "1100TH",
+    "stationLabel": "Farmoor",
+    "parameterName": "Flow",
+    "qualifier": "",
+    "lat": 51.757544,
+    "long": -1.366384,
+    "riverName": "River Thames",
+    "suggested_reach_name": ""
+  }
+]

@@ -1,4 +1,5 @@
 import httpx
+import asyncio
 from datetime import datetime
 import pytz
 from typing import Optional, Dict, Any, List
@@ -62,19 +63,27 @@ async def fetch_station_data(client: httpx.AsyncClient, station: StationConfig):
             type=station.type,
             lat=station.lat,
             long=station.long,
-            trend=trend
+            trend=trend,
+            river=station.river
         )
-        logger.info(f"Recorded reading for {station.measure_id} at {timestamp}: {value} ({status}) [{trend}]")
+        logger.info(f"Recorded {station.river}/{station.name} at {timestamp}: {value} ({status}) [{trend}]")
         
     except httpx.HTTPError as e:
         logger.error(f"HTTP error fetching data for {station.measure_id}: {e}")
     except Exception as e:
         logger.error(f"Unexpected error fetching data for {station.measure_id}: {e}")
 
+# Semaphore to limit concurrent EA API requests
+FETCH_SEMAPHORE = asyncio.Semaphore(10)
+
+async def _fetch_with_semaphore(client: httpx.AsyncClient, station: StationConfig):
+    async with FETCH_SEMAPHORE:
+        await fetch_station_data(client, station)
+
 async def run_fetch_cycle(config: AppConfig):
-    """Fetches data for all configured stations and evaluates alert status."""
-    logger.info("Starting fetch cycle")
+    """Fetches data for all configured stations concurrently and evaluates alert status."""
+    logger.info(f"Starting fetch cycle for {len(config.stations)} stations")
     async with httpx.AsyncClient() as client:
-        for station in config.stations:
-            await fetch_station_data(client, station)
+        tasks = [_fetch_with_semaphore(client, station) for station in config.stations]
+        await asyncio.gather(*tasks)
     logger.info("Finished fetch cycle")

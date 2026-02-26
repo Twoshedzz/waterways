@@ -30,6 +30,20 @@
             margin-bottom: 2rem;
             display: flex;
             gap: 1rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .river-select {
+            padding: 0.5rem;
+            font-size: 1rem;
+            border: 2px solid #3498db;
+            border-radius: 4px;
+            background: white;
+            color: #2c3e50;
+            font-weight: bold;
+            cursor: pointer;
+            min-width: 200px;
         }
 
         button {
@@ -217,6 +231,9 @@
     <h1>River Status Dashboard</h1>
 
     <div class="controls">
+        <select id="river-select" class="river-select" onchange="onRiverChange(this.value)" aria-label="Select River">
+            <option value="">All Rivers</option>
+        </select>
         <button id="btn-list" class="active" onclick="setView('list')">List View</button>
         <button id="btn-map" onclick="setView('map')">Map View</button>
         <label id="lock-toggle-container" class="toggle-container">
@@ -240,10 +257,36 @@
         let lockLayerGrp = null;
         let stationData = [];
         let showLocks = false;
+        let selectedRiver = '';
+
+        async function loadRivers() {
+            try {
+                const response = await fetch('/api/rivers');
+                const rivers = await response.json();
+                const select = document.getElementById('river-select');
+                rivers.forEach(r => {
+                    const opt = document.createElement('option');
+                    opt.value = r.name;
+                    opt.textContent = `${r.name} (${r.station_count})`;
+                    select.appendChild(opt);
+                });
+            } catch (e) {
+                console.error("Failed to load rivers", e);
+            }
+        }
+
+        function onRiverChange(river) {
+            selectedRiver = river;
+            loadData();
+        }
 
         async function loadData() {
             try {
-                const response = await fetch('/api/status');
+                let url = '/api/status';
+                if (selectedRiver) {
+                    url += `?river=${encodeURIComponent(selectedRiver)}`;
+                }
+                const response = await fetch(url);
                 stationData = await response.json();
                 renderList();
                 if (mapInstance) {
@@ -471,7 +514,37 @@
         }
 
         // Initialize
+        loadRivers();
         loadData();
+
+        // Poll for fresh data every 10 minutes
+        setInterval(loadData, 10 * 60 * 1000);
+
+        // Mobile: auto-switch to Map View centered on user's location
+        function isMobile() {
+            return /Android|iPhone|iPad|iPod|webOS|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+                || window.innerWidth <= 768;
+        }
+
+        if (isMobile() && navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                (pos) => {
+                    const userLat = pos.coords.latitude;
+                    const userLon = pos.coords.longitude;
+                    // Switch to map view centered on user
+                    setView('map');
+                    setTimeout(() => {
+                        if (mapInstance) {
+                            mapInstance.setView([userLat, userLon], 12);
+                        }
+                    }, 500);
+                },
+                (err) => {
+                    console.log("Geolocation not available or denied:", err.message);
+                    // Fallback: stay on list view
+                }
+            );
+        }
     </script>
 </body>
 

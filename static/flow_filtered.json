@@ -1,0 +1,86 @@
+[
+  {
+    "name": "Kingston",
+    "measure_id": "3400TH-flow--Mean-15_min-m3_s",
+    "ref": "3400TH",
+    "lat": 51.415005,
+    "long": -0.308869
+  },
+  {
+    "name": "Kingston",
+    "measure_id": "3400TH-flow--i-15_min-m3_s",
+    "ref": "3400TH",
+    "lat": 51.415005,
+    "long": -0.308869
+  },
+  {
+    "name": "Reading",
+    "measure_id": "2200TH-flow--Mean-15_min-m3_s",
+    "ref": "2200TH",
+    "lat": 51.461325,
+    "long": -0.967884
+  },
+  {
+    "name": "Sutton Courtenay",
+    "measure_id": "1800TH-flow--Mean-15_min-m3_s",
+    "ref": "1800TH",
+    "lat": 51.647821,
+    "long": -1.254167
+  },
+  {
+    "name": "Sutton Courtenay",
+    "measure_id": "1800TH-flow--i-15_min-m3_s",
+    "ref": "1800TH",
+    "lat": 51.647821,
+    "long": -1.254167
+  },
+  {
+    "name": "Maidenhead",
+    "measure_id": "2604TH-flow--i-15_min-m3_s",
+    "ref": "2604TH",
+    "lat": 51.524146,
+    "long": -0.702103
+  },
+  {
+    "name": "Staines",
+    "measure_id": "2900TH-flow--Mean-15_min-m3_s",
+    "ref": "2900TH",
+    "lat": 51.431611,
+    "long": -0.512248
+  },
+  {
+    "name": "Walton",
+    "measure_id": "3100TH-flow--i-15_min----",
+    "ref": "3100TH",
+    "lat": 51.3919,
+    "long": -0.421389
+  },
+  {
+    "name": "Walton",
+    "measure_id": "3100TH-flow--i-15_min-m3_s",
+    "ref": "3100TH",
+    "lat": 51.3919,
+    "long": -0.421389
+  },
+  {
+    "name": "Windsor Park",
+    "measure_id": "2700TH-flow--Mean-15_min-m3_s",
+    "ref": "2700TH",
+    "lat": 51.485795,
+    "long": -0.589124
+  },
+  {
+    "name": "Windsor Park",
+    "measure_id": "2700TH-flow--i-15_min-m3_s",
+    "ref": "2700TH",
+    "lat": 51.485795,
+    "long": -0.589124
+  },
+  {
+    "name": "Farmoor",
+    "measure_id": "1100TH-flow--Mean-15_min-m3_s",
+    "ref": "1100TH",
+    "lat": 51.757544,
+    "long": -1.366384
+  }
+]

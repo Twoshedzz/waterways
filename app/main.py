@@ -1,10 +1,11 @@
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Request, Query
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from fastapi.responses import HTMLResponse
 from contextlib import asynccontextmanager
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 import logging
+from typing import Optional
 
 from app.config import load_config
 from app.database import init_db, get_latest_readings
@@ -61,12 +62,33 @@ async def read_dashboard(request: Request):
         request=request, name="index.html", context={"readings": readings}
     )
 
+@app.get("/api/rivers")
+async def api_rivers():
+    """Returns a list of all rivers that have data, with station counts."""
+    readings = get_latest_readings()
+    river_counts = {}
+    for r in readings:
+        river = r.get("river", "Unknown")
+        if river not in river_counts:
+            river_counts[river] = set()
+        river_counts[river].add(r["name"])
+    
+    rivers = sorted([
+        {"name": river, "station_count": len(names)}
+        for river, names in river_counts.items()
+        if river  # skip empty strings
+    ], key=lambda x: x["name"])
+    return rivers
+
 @app.get("/api/status")
-async def api_status():
+async def api_status(river: Optional[str] = Query(None, description="Filter by river name")):
     readings = get_latest_readings()
     
-    # Group readings by (lat, long) proxying for "station"
-    # Normally we'd use a station_id, but coords/prefix serve well here for MVP
+    # Filter by river if specified
+    if river:
+        readings = [r for r in readings if r.get("river") == river]
+    
+    # Group readings by station name
     stations = {}
     
     for r in readings:
@@ -77,8 +99,9 @@ async def api_status():
                 "lat": r.get("lat"),
                 "long": r.get("long"),
                 "name": key,
+                "river": r.get("river", ""),
                 "readings": [],
-                "worst_status": "Green", # Start optimistic
+                "worst_status": "Green",
                 "_seen_types": set()
             }
             
@@ -117,3 +140,4 @@ async def api_bulletin():
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8000)
+

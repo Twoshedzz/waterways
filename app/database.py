@@ -17,6 +17,7 @@ def init_db():
                 status TEXT NOT NULL,
                 name TEXT NOT NULL,
                 type TEXT NOT NULL,
+                river TEXT,
                 lat REAL,
                 long REAL,
                 trend TEXT
@@ -38,13 +39,13 @@ def get_db():
     finally:
         conn.close()
 
-def insert_reading(measure_id: str, timestamp: str, value: Optional[float], status: str, name: str, type: str, lat: Optional[float], long: Optional[float], trend: str = "Steady"):
+def insert_reading(measure_id: str, timestamp: str, value: Optional[float], status: str, name: str, type: str, lat: Optional[float], long: Optional[float], trend: str = "Steady", river: str = ""):
     """Inserts a new reading into the database."""
     with get_db() as conn:
         cursor = conn.cursor()
         cursor.execute(
-            "INSERT INTO readings (measure_id, timestamp, value, status, name, type, lat, long, trend) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
-            (measure_id, timestamp, value, status, name, type, lat, long, trend)
+            "INSERT INTO readings (measure_id, timestamp, value, status, name, type, river, lat, long, trend) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            (measure_id, timestamp, value, status, name, type, river, lat, long, trend)
         )
         conn.commit()
 

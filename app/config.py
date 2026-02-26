@@ -10,7 +10,8 @@ class Thresholds(BaseModel):
 class StationConfig(BaseModel):
     measure_id: str
     name: str
-    type: str = "level" # 'level', 'flow', 'water_quality'
+    type: str = "level" # 'level', 'flow'
+    river: str = ""     # e.g. 'River Thames', 'River Cam'
     lat: float = 0.0
     long: float = 0.0
     thresholds: Thresholds
