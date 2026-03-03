@@ -355,7 +355,7 @@
         function toggleLocks(checked) {
             showLocks = checked;
             if (mapInstance) {
-                renderMapMarkers();
+                renderLocks();
             }
         }
 
@@ -452,7 +452,21 @@
                     .addTo(mapInstance);
             });
 
-            // 3. Render Lock POIs
+            // 3. Call renderLocks to handle the lock POIs
+            await renderLocks();
+
+            // Fit bounds if we have points
+            if (sortedStations.length > 0) {
+                const bounds = sortedStations.map(s => [s.lat, s.long]);
+                if (bounds.length > 0) {
+                    mapInstance.fitBounds(bounds, { padding: [50, 50] });
+                }
+            }
+        }
+
+        async function renderLocks() {
+            if (!lockLayerGrp) return;
+
             lockLayerGrp.clearLayers();
             if (showLocks) {
                 try {
@@ -471,14 +485,6 @@
                     }
                 } catch (e) {
                     console.error("Failed to load locks data", e);
-                }
-            }
-
-            // Fit bounds if we have points
-            if (sortedStations.length > 0) {
-                const bounds = sortedStations.map(s => [s.lat, s.long]);
-                if (bounds.length > 0) {
-                    mapInstance.fitBounds(bounds, { padding: [50, 50] });
                 }
             }
         }

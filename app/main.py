@@ -3,6 +3,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from fastapi.responses import HTMLResponse
 from contextlib import asynccontextmanager
+import asyncio
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 import logging
 from typing import Optional
@@ -42,8 +43,10 @@ async def lifespan(app: FastAPI):
     )
     scheduler.start()
     
-    # Run an initial fetch and bulletin on startup
-    await run_fetch_cycle(app_config)
+    # Run an initial fetch and bulletin on startup without blocking the server boot
+    asyncio.create_task(run_fetch_cycle(app_config))
+    # We can also call check_bulletin_hourly right away; it is synchronous but shouldn't be too slow
+    # Running it via scheduler or thread pool might be safer if it were very slow, but for now this is ok.
     check_bulletin_hourly()
     
     yield

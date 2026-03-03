@@ -12,9 +12,9 @@ __pycache__/
 *.db
 
 # Temporary json data files generated during scraping
-thames_candidates.json
-new_stations.json
-locks.json
+/thames_candidates.json
+/new_stations.json
+/locks.json
 
 # IDEs and OS
 .vscode/
