@@ -37,3 +37,22 @@ The Dashboard relies on two external Application Programming Interfaces (APIs) t
 2. **OpenStreetMap (OSM) via the Overpass API**
    - *What it is:* OpenStreetMap is a free, editable geographic database of the world, built by a community of mappers. The Overpass API is a service that allows us to query and download very specific geographic shapes and points from that database.
    - *How we use it:* We used this API to download the actual structural geometry of the River Thames (how it twists, turns, and flows physically) into our application. We also use Leaflet.js (a mapping library) relying on OpenStreetMap's visual map "tiles" to display the background map you see when looking at the dashboard.
+
+## Progress Summary
+
+We have recently made several updates to improve the application:
+
+- **Map Locks**: We integrated river lock locations onto the map view, which can be toggled on or off to help boaters navigate their routes.
+- **Background Startup**: Optimized the server startup by moving the initial data fetch to a background task. This allows the API to serve requests instantly upon boot, resolving deployment timeouts.
+- **Multiple Rivers**: Upgraded the app's configuration to dynamically support multiple UK navigable rivers natively. *Note: One of the supported rivers is currently missing its geographical shape data trace.*
+
+## Future Features
+
+Looking ahead, we are considering several functional and visual enhancements:
+
+- **Water Quality APIs**: Consider incorporating additional APIs to monitor and display environmental water quality or pollution metrics.
+- **Trend Indicators**: Improve the current trend arrows (Rising / Falling / Steady) to be more informative, less vague, and possibly reflect the rate of change.
+- **Mobile Experience**: Revisit the overall UI layout and behaviors to provide a more robust and optimized experience for mobile phone users.
+- **Card Design**: Re-evaluate the data card design hierarchy to improve user experience, data density, and aesthetic appeal.
+- **RAG Status Explainers**: Add educational content that clearly explains what the underlying metrics mean and outlines the conditions represented by the Green, Amber, and Red safety statuses.
+- **Proactive Alerts**: Explore integrating **GOV.UK Notify** to automatically push notifications (email/SMS) to users when a tracked river station reaches the Red (Danger) threshold.
